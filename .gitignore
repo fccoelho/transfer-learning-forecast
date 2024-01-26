@@ -175,9 +175,14 @@ notebooks/training/.DS_Store
 predictions/.DS_Store
 predictions/lstm/.DS_Store
 saved_models/.DS_Store
-.gitignore
+#.gitignore
 saved_models/lstm/.DS_Store
 saved_models/pgbm/.DS_Store
 saved_models/lstm/*.h5
 saved_models/pgbm/*.pt
 .DS_Store
+*.orig
+*.png
+*.csv
+*.json
+*.keras
