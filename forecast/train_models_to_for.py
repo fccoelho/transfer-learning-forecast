@@ -19,7 +19,7 @@ for macro in dfs.code_macro.unique():
 
     FILENAME_DATA = f'../data/dengue_{macro}.csv'
 
-    end_date = '2023-12-24'
+    end_date = '2024-01-07'
     # if os.path.exists(f'../saved_models/lstm/trained_{macro}_dengue_macro.keras'):
     #     continue
 
