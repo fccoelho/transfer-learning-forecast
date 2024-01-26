@@ -18,10 +18,10 @@ L2 = 1e-5
 
 
 def train_dl_model(city, doenca='dengue', end_date_train='2022-11-01', end_date='2023-11-01', ini_date=None, plot=True, lr =0.0001 ):
-    FILENAME_DATA = f'../data/{doenca}_{city}_cluster.csv'
+    FILENAME_DATA = f'../data/{doenca}_{city}_cluster.csv.gz'
     cols = pd.read_csv(FILENAME_DATA, index_col='Unnamed: 0').shape[1]
 
-    FEAT = int((1 + 1 / 16) * cols) + 2  # number of features
+    FEAT = cols  # number of features
 
     model = build_model(l1=L1, l2=L2, hidden=HIDDEN, features=FEAT, predict_n=PREDICT_N, look_back=LOOK_BACK,
                         batch_size=BATCH_SIZE, loss='msle', lr=lr)
@@ -37,13 +37,13 @@ def train_dl_model(city, doenca='dengue', end_date_train='2022-11-01', end_date=
 
 
 def train_transf_chik(city, ini_date, end_date_train, end_date, plot=True):
-    FILENAME_DATA = f'../data/chik_{city}_cluster.csv'
+    FILENAME_DATA = f'../data/chik_{city}_cluster.csv.gz'
 
     BATCH_SIZE = 1
 
     cols = pd.read_csv(FILENAME_DATA, index_col='Unnamed: 0').shape[1]
 
-    FEAT = int((1 + 1 / 16) * cols) + 2  # number of features
+    FEAT = cols # number of features
 
     filename = f'../saved_models/lstm/trained_{city}_dengue_msle.keras'
     model = transf_model(filename, L1, L2, HIDDEN, FEAT, PREDICT_N, LOOK_BACK, batch_size=BATCH_SIZE, lr=0.0001)
@@ -61,7 +61,7 @@ def train_transf_chik(city, ini_date, end_date_train, end_date, plot=True):
 
 
 def train_pgbm_model(city, doenca, ini_date, end_date_train, end_date):
-    FILENAME_DATA = f'../data/{doenca}_{city}_cluster.csv'
+    FILENAME_DATA = f'../data/{doenca}_{city}_cluster.csv.gz'
     # ini_date=ini_date, end_train_date=end_date_train,
     # end_date=end_date, filename=FILENAME_DATA, verbose=1)
     #
@@ -73,7 +73,7 @@ def train_pgbm_model(city, doenca, ini_date, end_date_train, end_date):
 
 
 def apply_dengue_pgbm_on_chik(city, ini_date, end_date, plot=True):
-    FILENAME_DATA = f'../data/chik_{city}_cluster.csv'
+    FILENAME_DATA = f'../data/chik_{city}_cluster.csv.gz'
     preds, preds25, preds975, X_data, targets = cross_dengue_chik_prediction(city, predict_n=PREDICT_N,
                                                                              look_back=LOOK_BACK, ini_date=ini_date,
                                                                              end_date=end_date, filename=FILENAME_DATA,

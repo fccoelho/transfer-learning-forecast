@@ -89,10 +89,6 @@ def get_nn_data_for(city, ini_date=None, end_date=None, look_back=4, predict_n=4
     except:
         target_col = list(df.columns).index(f"casos_est_{city}")
 
-    if df.dropna().shape[0] == 0:
-        c = df.columns[df.columns.str.endswith('_small')]
-        df = df.drop(c, axis=1)
-
     df = df.dropna()
 
     if ini_date != None:
@@ -200,7 +196,7 @@ def apply_forecast(city, ini_date, end_date, look_back, predict_n, filename, mod
     df['HTinc'] = HTinc
     df['LTinc'] = LTinc
 
-    df.to_csv(f'./forecast_tables/forecast_{city}.csv')
+    df.to_csv(f'./forecast_tables/forecast_{city}.csv.gz')
     return df
 
 
@@ -328,7 +324,7 @@ def apply_forecast_macro(macro, ini_date, end_date, look_back, predict_n, filena
 
 def plot_prob_map(week_idx):
     # loading all macro forcasts on a single dataframe
-    for i, m in enumerate(glob.glob('./forecast_tables/forecast_*.csv')):
+    for i, m in enumerate(glob.glob('./forecast_tables/forecast_*.csv.gz')):
         if i == 0:
             df = pd.read_csv(m)
             dates = df.date.unique()

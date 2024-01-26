@@ -1,6 +1,5 @@
 import numpy as np 
 import pandas as pd 
-from epiweeks import Week
 from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize, LabelEncoder
@@ -76,29 +75,6 @@ def normalize_data(df, log_transform=False, ratio = 0.75, end_train_date = None)
     :return:
     """
     
-    df['month'] = df.index.month
-    
-    weeks = []
-    for date in df.index:
-        #print(date)
-        weeks.append(Week.fromdate(date).weektuple()[1])
-        #print(Week.fromdate(date).weektuple()[1])
-        #break  
-        
-    df['SE'] = weeks
-    
-    df.loc[df.index == '2018-04-04', 'SE'] = 15
-     
-    diff_series = [df]
-        
-    for i in df.columns:
-
-        if i.startswith('casos_'):
-                
-            diff_series.append(pd.DataFrame(data = np.diff(df[f'{i}'], 1), index = df.index[1:], columns = [f'diff_{i}']))
-
-    df = pd.concat(diff_series, axis = 1, join = 'outer')    
-
     if 'municipio_geocodigo' in df.columns:
         df.pop('municipio_geocodigo')
 
@@ -139,13 +115,9 @@ def get_nn_data(city, ini_date = None, end_date = None, end_train_date = None, r
     df.index = pd.to_datetime(df.index)
 
     try:
-        target_col = list(df.columns).index("casos_est")
+        target_col = list(df.columns).index(f"casos_{city}")
     except ValueError:
         target_col = list(df.columns).index(f"casos_est_{city}")
-
-    if df.dropna().shape[0] == 0:
-        c = df.columns[df.columns.str.endswith('_small')]
-        df = df.drop(c, axis =1 )
 
     df = df.dropna()
 
@@ -178,11 +150,6 @@ def get_nn_data(city, ini_date = None, end_date = None, end_train_date = None, r
         #print(norm_df.index[0])
         factor = max_features[target_col]
 
- 
-                #norm_df[f'diff_2_{i}'] = np.concatenate(([np.nan, np.nan], np.diff(norm_df[f'{i}'], 2)), axis = 0)
-        
-
-
         # end_train_date needs to be lower than end_date, otherwise we will get an error in the value inside loc 
         if datetime.strptime(end_train_date, '%Y-%m-%d') < datetime.strptime(end_date, '%Y-%m-%d'):
             X_train, Y_train, X_test, Y_test = split_data(
@@ -208,17 +175,8 @@ def get_nn_data(city, ini_date = None, end_date = None, end_train_date = None, r
 
 def get_ml_data(city, ini_date, end_train_date, end_date, ratio, predict_n, look_back, filename = None):
 
-
     data = pd.read_csv(filename, index_col = 'Unnamed: 0' )
     data.index = pd.to_datetime(data.index)  
-
-    for i in data.columns:
-
-        if i.startswith('casos'):
-
-            #data[i] = np.log()
-
-            data[f'diff_{i}'] = np.concatenate( ([np.nan], np.diff(data[i], 1)))
 
     data = data.dropna()
 

@@ -15,7 +15,7 @@ end_date = '2024-01-07'
 for macro in dfs.code_macro.unique():
     print(f'Forecasting: {macro}')
 
-    filename = f'../data/dengue_{macro}.csv'
+    filename = f'../data/dengue_{macro}.csv.gz'
     model_name = f'trained_{macro}_dengue_macro'
 
     df_for = apply_forecast_macro(macro, ini_date, end_date, look_back=LOOK_BACK, predict_n=PREDICT_N,

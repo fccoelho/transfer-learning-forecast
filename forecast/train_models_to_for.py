@@ -7,7 +7,7 @@ dfs = pd.read_csv('../macro_saude.csv')
 PREDICT_N = 10  # number of new days predicted
 LOOK_BACK = 12  # number of last days used to make the prediction
 BATCH_SIZE = 1
-EPOCHS = 100
+EPOCHS = 10
 HIDDEN = 16
 L1 = 1e-5
 L2 = 1e-5
@@ -17,7 +17,7 @@ TRAIN_FROM = '2016-01-01'
 for macro in dfs.code_macro.unique():
     print(f'Training Macroregion: {macro}')
 
-    FILENAME_DATA = f'../data/dengue_{macro}.csv'
+    FILENAME_DATA = f'../data/dengue_{macro}.csv.gz'
 
     end_date = '2024-01-07'
     # if os.path.exists(f'../saved_models/lstm/trained_{macro}_dengue_macro.keras'):

@@ -14,7 +14,7 @@ HIDDEN = 16
 L1 = 1e-5
 L2 = 1e-5
 TRAIN_FROM = '2016-01-01'  # Train the models from this date
-LOSS = 'mse'
+LOSS = 'msle'
 
 def train_dl_model(city, doenca='dengue', end_date_train='2022-11-01', ratio=None, end_date='2023-12-31',
                    ini_date=TRAIN_FROM,
@@ -22,26 +22,9 @@ def train_dl_model(city, doenca='dengue', end_date_train='2022-11-01', ratio=Non
                    label=LOSS,
                    look_back=LOOK_BACK, predict_n=PREDICT_N, hidden=HIDDEN, l1=L1, l2=L2, batch_size=BATCH_SIZE,
                    epochs=EPOCHS):
-    df = pd.read_csv(filename_data, index_col='Unnamed: 0')
-    if df.dropna().shape[0] == 0:
-        c = df.columns[df.columns.str.endswith('_small')]
-        df = df.drop(c, axis=1)
+    df = pd.read_csv(filename_data, index_col='Unnamed: 0', nrows = 1)
 
-    if len(str(city)) == 4:  # is a macroregion
-
-        if df.columns[df.columns.str.endswith('_small')].shape[0] == 0:
-            c = df.columns[df.columns.str.startswith('casos')].shape[0] - 1
-
-            feat = c * (18) + 4
-
-        else:
-            c = df.columns[df.columns.str.startswith('casos')].shape[0] - 2
-
-            feat = c * (18) + 2 + 17 + 2  # number of features
-    elif len(str(city)) == 2:  # is a state
-        c = df.columns[df.columns.str.startswith('casos')].shape[0] - 1
-
-        feat = c * (17) + 4  # number of features
+    feat = df.shape[1]
 
     model = build_model(l1=l1, l2=l2, hidden=hidden, features=feat, predict_n=predict_n, look_back=look_back,
                         batch_size=batch_size, loss=LOSS, lr=lr)
